@@ -23,13 +23,17 @@
     <!-- SECCIÓN DEL VISOR -->
     <section class="viewer-section">
       <div class="viewer-box">
-        <template v-if="!selectedDesign">
-          <p>Selecciona un diseño para probarlo</p>
-        </template>
-        <template v-else>
-          <h2>{{ selectedDesign.name }}</h2>
-          <img :src="selectedDesign.image" :alt="selectedDesign.name" class="selected-image" />
-        </template>
+        <p v-if="!selectedDesign">Selecciona un diseño para probarlo</p>
+        <div id="probadorCanvas" class="sketchContainer" v-show="selectedDesign">
+          <!-- <canvas id="probadorCanvas"></canvas> -->
+          <!-- <div>gono</div> -->
+        </div>
+        <!-- <template v-show="selectedDesign"> -->
+        <!--   <h2>{{ selectedDesign.name }}</h2> -->
+        <!--   <img :src="selectedDesign.image" :alt="selectedDesign.name" class="selected-image" /> -->
+        <!--   <div style="display: flex; justify-content: center;"> -->
+        <!--   </div> -->
+        <!-- </template> -->
       </div>
     </section>
   </div>
@@ -37,6 +41,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useScriptTag } from '@vueuse/core'
 
 // Lista de diseños
 const designs = ref([
@@ -50,10 +55,18 @@ const selectedDesign = ref(null)
 
 function selectDesign(design) {
   selectedDesign.value = design
+  onPrendaClick(design.name)
 }
+//useScriptTag('https://unpkg.com/ml5@1/dist/ml5.js')
+useScriptTag('https://cdn.jsdelivr.net/npm/p5@2.1.1/lib/p5.js')
+useScriptTag('/src/assets/probadorSketch.js')
 </script>
 
 <style scoped>
+.sketchContainer {
+  width: 100%;
+  height: 100%;
+}
 .probador {
   background-color: #f1f0f5;
   font-family: 'Poppins', sans-serif;
