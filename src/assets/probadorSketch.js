@@ -33,9 +33,9 @@ async function setup () {
 
   bodyPose.detectStart(video, gotPoses)
 
-  camiseta1 = await loadImage('src/assets/images/diseño1.png')
-  camiseta2 = await loadImage('src/assets/images/diseño2.png')
-  camiseta3 = await loadImage('src/assets/images/diseño3.png')
+  camiseta1 = await loadImage('src/assets/images/fotocamisa1.png')
+  camiseta2 = await loadImage('src/assets/images/fotocamisa2.png')
+  camiseta3 = await loadImage('src/assets/images/fotocamisa3.png')
 
   camisetas = {
     'Diseño 1': camiseta1,
@@ -52,9 +52,39 @@ function draw () {
 
   drawMarkers(poses)
 
-  if (currentCamiseta) image(camisetas[currentCamiseta], mouseX, mouseY)
-}
+  // ==== PROBADOR REAL USANDO HOMBROS ====
+  if (poses.length && currentCamiseta) {
 
+    const { left_shoulder, right_shoulder } = poses[0];
+
+    if (left_shoulder.confidence > 0.2 && right_shoulder.confidence > 0.2) {
+
+      // Ajustar coordenadas al escalado del video
+      const lsX = left_shoulder.x * vScale;
+      const lsY = left_shoulder.y * vScale;
+      const rsX = right_shoulder.x * vScale;
+      const rsY = right_shoulder.y * vScale;
+
+      // Centro entre los hombros
+      const centerX = (lsX + rsX) / 2;
+      const centerY = (lsY + rsY) / 2;
+
+      // Ancho entre hombros
+      const ancho = dist(lsX, lsY, rsX, rsY) * 2;
+
+      // Ángulo de inclinación
+      const angle = atan2(rsY - lsY, rsX - lsX);
+
+      // ==== DIBUJAR CAMISETA ====
+      push();
+      translate(centerX, centerY + 180); // Bajar la camiseta al pecho
+      // rotate(angle); // Actívalo si quieres rotación realista
+      imageMode(CENTER);
+      image(camisetas[currentCamiseta], 0, 0, ancho * 0.9, ancho * 0.9);
+      pop();
+    }
+  }
+}
 // redimensionar canvas cuando se redimensione la pantalla
 function windowResized() {
   const container = document.getElementById('probadorCanvas')

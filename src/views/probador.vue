@@ -43,6 +43,7 @@
 import { ref } from 'vue'
 import { useScriptTag } from '@vueuse/core'
 
+
 // Lista de diseños
 const designs = ref([
   { name: 'Diseño 1', image: new URL('@/assets/images/diseño1.png', import.meta.url).href },
